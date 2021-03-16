@@ -83,29 +83,20 @@ io.on('connection', (socket) => {
         let message
         let fullMessage;
 
-        // runs when do not log is enabled
-        if (other_config.Do_not_log === true){
-            message = cmd.substring(0,server_config.server_message_maxLength);
-            fullMessage = {message, username}
-            socket.broadcast.emit('message', fullMessage);
-        }
+        // trim the message according to config
+        message = cmd.substring(0,server_config.server_message_maxLength);
+
+        // combines the timed message and the username
+        fullMessage = {message, username}
 
         // runs when do not log is disabled
-        else{
-
-            // trim the message according to config
-            message = cmd.substring(0,server_config.server_message_maxLength);
-
-            // combines the timed message and the username
-            fullMessage = {message, username}
-
+        if (other_config.Do_not_log === false){
             // logs the message in the server
             logger.message_nl(`${logger.date("ymdhms")} New message by ${username} message: ${cmd} trimmed message: ${message}`, other_config.new_message_color);
-
-            // broadcasts the message
-            socket.broadcast.emit('message', fullMessage);
-
         }
+
+        // broadcasts the message
+        socket.broadcast.emit('message', fullMessage);
     });
 
 
